@@ -198,12 +198,32 @@ function logout() {
 }
 
 @media (max-width: 768px) {
-  .nav-menu {
+  .navbar-container {
+    flex-direction: column;
     gap: 1rem;
+    padding: 0.5rem 1rem;
   }
 
-  .navbar-container {
-    flex-wrap: wrap;
+  .navbar-logo {
+    font-size: 1rem;
+  }
+
+  .nav-menu {
+    gap: 0.8rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nav-item {
+    flex: 0 1 auto;
+  }
+
+  .nav-link {
+    font-size: 0.9rem;
+  }
+
+  .main-content {
+    padding: 1rem 0.75rem;
   }
 }
 </style>

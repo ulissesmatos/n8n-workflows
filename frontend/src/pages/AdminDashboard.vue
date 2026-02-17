@@ -142,4 +142,41 @@ h1 {
   margin-right: 1rem;
   margin-bottom: 1rem;
 }
+
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-card h3 {
+    font-size: 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+  }
+
+  .quick-actions {
+    padding: 1rem;
+  }
+
+  .quick-actions .btn {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 0.75rem;
+  }
+}
 </style>

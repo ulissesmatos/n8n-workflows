@@ -125,21 +125,54 @@ function handleLogout() {
 @media (max-width: 768px) {
   .admin-layout {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 
   .admin-sidebar {
-    border-right: 1px solid #242424;
-    border-bottom: 1px solid #242424;
+    border-radius: 12px;
+    padding: 0.8rem 0;
+    border: 1px solid #242424;
+  }
+
+  .sidebar-header {
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-header h2 {
+    font-size: 1rem;
   }
 
   .sidebar-nav {
     flex-direction: row;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .sidebar-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .nav-item {
-    padding: 0.75rem 1rem;
+    padding: 0.7rem 1.2rem;
     white-space: nowrap;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    font-size: 0.9rem;
+  }
+
+  .nav-item.router-link-exact-active {
+    background: transparent;
+    color: #f0f0f0;
+    border-left: none;
+    border-bottom-color: #f0f0f0;
+    font-weight: 600;
+  }
+
+  .admin-main {
+    padding: 0.25rem;
   }
 }
 </style>

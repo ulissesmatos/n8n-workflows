@@ -503,6 +503,61 @@ onMounted(fetchCategories);
   animation: spin 0.8s linear infinite;
 }
 
+@media (max-width: 768px) {
+  .admin-categories {
+    padding: 0.5rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .page-header .btn {
+    width: 100%;
+  }
+
+  .categories-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .categories-table th,
+  .categories-table td {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .desc-cell {
+    max-width: 150px;
+  }
+
+  .btn-icon {
+    padding: 4px 6px;
+    font-size: 0.9rem;
+  }
+
+  .modal {
+    width: 95vw;
+    padding: 1.5rem;
+  }
+
+  .modal h2 {
+    font-size: 1.1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+  }
+}
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
