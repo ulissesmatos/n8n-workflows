@@ -8,7 +8,6 @@
         <router-link
           to="/admin"
           class="nav-item"
-          exact
         >
           Dashboard
         </router-link>
@@ -103,7 +102,7 @@ function handleLogout() {
   color: #f4f4f4;
 }
 
-.nav-item.router-link-active {
+.nav-item.router-link-exact-active {
   background: #f0f0f0;
   color: #111;
   border-left-color: #f0f0f0;
