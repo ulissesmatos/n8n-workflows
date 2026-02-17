@@ -144,39 +144,43 @@ h1 {
 }
 
 @media (max-width: 768px) {
-  .admin-dashboard {
-    padding: 0.5rem;
-  }
-
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 
   .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
   }
 
   .stat-card {
-    padding: 1rem;
+    padding: 0.9rem;
   }
 
   .stat-card h3 {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
   }
 
   .stat-value {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
 
   .quick-actions {
     padding: 1rem;
   }
 
+  .quick-actions h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
   .quick-actions .btn {
+    display: block;
     width: 100%;
     margin-right: 0;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
+    text-align: center;
   }
 }
 </style>

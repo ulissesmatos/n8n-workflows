@@ -17,7 +17,7 @@
         <p>No categories yet. Create your first one!</p>
       </div>
 
-      <table v-else class="categories-table">
+      <table v-else class="categories-table desktop-only">
         <thead>
           <tr>
             <th>Icon</th>
@@ -42,6 +42,25 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Mobile card list -->
+      <div v-if="categories.length > 0" class="mobile-only category-cards">
+        <div v-for="cat in categories" :key="'m-' + cat.id" class="category-card">
+          <div class="category-card-header">
+            <span class="category-card-icon">{{ cat.icon || '📁' }}</span>
+            <div class="category-card-info">
+              <span class="category-card-name">{{ cat.name }}</span>
+              <span class="category-card-slug">{{ cat.slug }}</span>
+            </div>
+            <span class="category-card-count">{{ cat.workflowCount ?? 0 }}</span>
+          </div>
+          <p v-if="cat.description" class="category-card-desc">{{ cat.description }}</p>
+          <div class="category-card-actions">
+            <button class="btn btn-sm btn-secondary" @click="openEditModal(cat)">Edit</button>
+            <button class="btn btn-sm btn-danger" @click="confirmDelete(cat)">Delete</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Create / Edit Modal -->
@@ -503,45 +522,118 @@ onMounted(fetchCategories);
   animation: spin 0.8s linear infinite;
 }
 
+/* Mobile card list (hidden on desktop) */
+.mobile-only {
+  display: none;
+}
+
+.category-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.category-card {
+  background: #0c0c0c;
+  border: 1px solid #242424;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.category-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.category-card-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.category-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-card-name {
+  font-weight: 600;
+  color: #f2f2f2;
+  font-size: 0.95rem;
+}
+
+.category-card-slug {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.category-card-count {
+  font-weight: 700;
+  color: #6366f1;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.category-card-desc {
+  margin: 0.6rem 0 0;
+  color: #888;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.category-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
   .admin-categories {
-    padding: 0.5rem;
+    padding: 0;
   }
 
   .page-header {
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     align-items: stretch;
+    margin-bottom: 1.25rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.3rem;
+    margin: 0;
   }
 
   .page-header .btn {
     width: 100%;
   }
 
-  .categories-table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  /* Hide desktop table, show mobile cards */
+  .desktop-only {
+    display: none !important;
   }
 
-  .categories-table th,
-  .categories-table td {
-    padding: 0.6rem 0.75rem;
-    font-size: 0.85rem;
-  }
-
-  .desc-cell {
-    max-width: 150px;
-  }
-
-  .btn-icon {
-    padding: 4px 6px;
-    font-size: 0.9rem;
+  .mobile-only {
+    display: flex;
   }
 
   .modal {
-    width: 95vw;
-    padding: 1.5rem;
+    width: calc(100vw - 2rem);
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    padding: 1.25rem;
+    border-radius: 14px;
   }
 
   .modal h2 {
@@ -555,6 +647,10 @@ onMounted(fetchCategories);
 
   .modal-actions .btn {
     width: 100%;
+  }
+
+  .modal-sm {
+    width: calc(100vw - 2rem);
   }
 }
 

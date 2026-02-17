@@ -26,7 +26,7 @@
 
     <table
       v-else
-      class="workflows-table"
+      class="workflows-table desktop-only"
     >
       <thead>
         <tr>
@@ -70,6 +70,28 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Mobile workflow cards -->
+    <div v-if="workflows.length > 0" class="mobile-only wf-cards">
+      <div v-for="wf in workflows" :key="'m-' + wf.id" class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-card-info">
+            <span class="wf-card-title">{{ wf.title }}</span>
+            <span :class="wf.isPublished ? 'badge-success' : 'badge-warning'" class="badge">
+              {{ wf.isPublished ? 'Published' : 'Draft' }}
+            </span>
+          </div>
+        </div>
+        <div class="wf-card-stats">
+          <span>👁 {{ wf.viewCount }}</span>
+          <span>⬇ {{ wf.downloadCount }}</span>
+        </div>
+        <div class="wf-card-actions">
+          <router-link :to="`/admin/workflows/${wf.id}/edit`" class="btn btn-small">Edit</router-link>
+          <button class="btn btn-danger btn-small" @click="deleteWorkflow(wf.id)">Delete</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -147,6 +169,90 @@ onMounted(() => {
 .actions {
   display: flex;
   gap: 0.5rem;
+}
+
+/* Mobile card list (hidden on desktop) */
+.mobile-only {
+  display: none;
+}
+
+.wf-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.wf-card {
+  background: #0c0c0c;
+  border: 1px solid #242424;
+  border-radius: 12px;
+  padding: 0.9rem;
+}
+
+.wf-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.wf-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.wf-card-title {
+  font-weight: 600;
+  color: #f2f2f2;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wf-card-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  color: #777;
+  font-size: 0.8rem;
+}
+
+.wf-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .page-header h1 {
+    font-size: 1.3rem;
+    margin: 0;
+  }
+
+  .page-header .btn {
+    text-align: center;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex;
+  }
+
+  .no-results {
+    padding: 2rem 1rem;
+  }
 }
 </style>
 

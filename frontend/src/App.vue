@@ -198,32 +198,47 @@ function logout() {
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    padding: 0.6rem 0;
+  }
+
   .navbar-container {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 0 0.75rem;
+    justify-content: center;
+    gap: 1.5rem;
   }
 
   .navbar-logo {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .nav-menu {
-    gap: 0.8rem;
-    width: 100%;
-    justify-content: center;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
   }
 
   .nav-item {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
   }
 
   .nav-link {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .logout-btn {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.85rem;
   }
 
   .main-content {
     padding: 1rem 0.75rem;
+    overflow-x: hidden;
+  }
+
+  .footer {
+    font-size: 0.75rem;
+    padding: 1rem;
   }
 }
 </style>

@@ -387,4 +387,33 @@ onMounted(async () => {
   color: #8e8e8e;
   font-size: 0.78rem;
 }
+
+@media (max-width: 768px) {
+  .workflow-editor {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .workflow-editor h1 {
+    font-size: 1.3rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .rich-editor :deep(.ql-container.ql-snow) {
+    min-height: 180px;
+  }
+
+  .rich-editor :deep(.ql-editor) {
+    min-height: 140px;
+  }
+}
 </style>
