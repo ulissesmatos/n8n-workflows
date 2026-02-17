@@ -9,7 +9,7 @@
       :class="{ 'loading-canvas-only': isCanvasOnly }"
       :style="isCanvasOnly ? { height: `${canvasHeight}px` } : undefined"
     >
-      {{ isCanvasOnly ? '' : 'Loading workflow...' }}
+      {{ isCanvasOnly ? '\u00A0' : 'Loading workflow...' }}
     </div>
     
     <div
@@ -27,7 +27,7 @@
         v-if="isCanvasOnly && workflow.jsonData"
         :workflow="workflow"
         :height="canvasHeight"
-        :interactive="true"
+        :interactive="false"
         :click-to-interact="false"
       />
 
