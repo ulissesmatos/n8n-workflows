@@ -94,7 +94,11 @@ async function syncDemoElement() {
   el.setAttribute('workflow', serializedWorkflow);
   el.setAttribute('theme', 'dark');
   el.setAttribute('tidyup', 'true');
-  el.setAttribute('clicktointeract', props.clickToInteract ? 'true' : 'false');
+  if (props.clickToInteract) {
+    el.setAttribute('clicktointeract', 'true');
+  } else {
+    el.removeAttribute('clicktointeract');
+  }
 
   if (props.interactive) {
     el.removeAttribute('disableinteractivity');

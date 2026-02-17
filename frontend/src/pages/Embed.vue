@@ -6,8 +6,10 @@
     <div
       v-if="loading"
       class="loading"
+      :class="{ 'loading-canvas-only': isCanvasOnly }"
+      :style="isCanvasOnly ? { height: `${canvasHeight}px` } : undefined"
     >
-      Loading workflow...
+      {{ isCanvasOnly ? '' : 'Loading workflow...' }}
     </div>
     
     <div
@@ -148,6 +150,13 @@ onMounted(() => {
   color: #afafaf;
 }
 
+.loading.loading-canvas-only {
+  padding: 0;
+  border: 1px solid #283140;
+  border-radius: 12px;
+  background: #090d13;
+}
+
 .error {
   color: #ffb8b8;
 }
@@ -204,4 +213,3 @@ onMounted(() => {
   text-decoration: underline;
 }
 </style>
-

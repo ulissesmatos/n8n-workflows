@@ -20,6 +20,7 @@
         margin: 0;
         padding: 0;
         width: 100%;
+        overflow: hidden;
         background: transparent;
         font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
       }
@@ -101,6 +102,7 @@
         iframe.className = 'embed-frame';
         iframe.src = src;
         iframe.loading = 'eager';
+        iframe.scrolling = 'no';
         iframe.referrerPolicy = 'strict-origin-when-cross-origin';
         iframe.style.height = height + 'px';
         iframe.style.borderColor = border;
