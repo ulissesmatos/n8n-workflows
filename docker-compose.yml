@@ -1,0 +1,71 @@
+# Root docker-compose.yml - convenience symlink
+# This file is identical to docker/docker-compose.yml
+# Run: docker-compose up -d
+
+version: '3.9'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: minisaas-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-minisaas}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-securepassword}
+      POSTGRES_DB: ${DB_NAME:-minisaas_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-minisaas}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - minisaas-network
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: backend
+    container_name: minisaas-backend
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://${DB_USER:-minisaas}:${DB_PASSWORD:-securepassword}@postgres:5432/${DB_NAME:-minisaas_db}
+      PORT: 3000
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-key-change-in-production}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:80,http://localhost:5173}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - minisaas-network
+    restart: unless-stopped
+
+  # Frontend (Nginx)
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: frontend
+    container_name: minisaas-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - minisaas-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  minisaas-network:
+    driver: bridge

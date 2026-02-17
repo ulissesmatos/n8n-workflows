@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workflow Embed</title>
+    <style>
+      :root {
+        --bg: #090b10;
+        --border: #232833;
+        --radius: 14px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        background: transparent;
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      }
+
+      .embed-wrap {
+        width: 100%;
+      }
+
+      .embed-frame {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--bg);
+        display: block;
+      }
+
+      .embed-error {
+        border: 1px solid #432;
+        border-radius: 10px;
+        background: #1a1111;
+        color: #ffd8d8;
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+
+      .embed-help {
+        margin-top: 8px;
+        color: #9ca3af;
+        font-size: 12px;
+      }
+
+      .embed-help code {
+        color: #e5e7eb;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" class="embed-wrap"></div>
+
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+
+        // Required: workflow slug
+        var slug = params.get('slug') || '';
+
+        // Optional: app origin where your frontend is running
+        // Ex: https://app.seudominio.com
+        var app = params.get('app') || window.location.origin;
+
+        // Optional: iframe height in px
+        var height = Number(params.get('height') || 680);
+        if (!Number.isFinite(height) || height < 320) height = 680;
+
+        // Optional style
+        var radius = Number(params.get('radius') || 14);
+        if (!Number.isFinite(radius) || radius < 0) radius = 14;
+
+        var border = params.get('border') || '#232833';
+
+        var root = document.getElementById('root');
+
+        if (!slug) {
+          root.innerHTML = '' +
+            '<div class="embed-error">' +
+            'Parâmetro obrigatório ausente: <strong>slug</strong>.' +
+            '<div class="embed-help">Exemplo: <code>?slug=meu-workflow&app=https://app.seudominio.com</code></div>' +
+            '</div>';
+          return;
+        }
+
+        // Normalize app url
+        app = app.replace(/\/$/, '');
+
+        var src = app + '/embed/' + encodeURIComponent(slug);
+
+        var iframe = document.createElement('iframe');
+        iframe.className = 'embed-frame';
+        iframe.src = src;
+        iframe.loading = 'lazy';
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.style.height = height + 'px';
+        iframe.style.borderColor = border;
+        iframe.style.borderRadius = radius + 'px';
+        iframe.setAttribute('allowfullscreen', 'true');
+
+        root.appendChild(iframe);
+      })();
+    </script>
+  </body>
+</html>

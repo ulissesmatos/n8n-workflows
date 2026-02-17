@@ -1,0 +1,90 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+.vite/
+.nuxt/
+.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.swc
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Nginx
+*.log
+nginx_access.log
+nginx_error.log
+
+# Docker
+.dockerignore
+
+# Secrets (never commit!)
+.env.production
+secrets/
+private/
+keys/
+
+# Backups
+*.sql
+*.backup
+backups/
+
+# Node
+.node_repl_history
+
+# Miscellaneous
+.vuepress/dist
+.cache
+.parcel-cache
+.next
+out/
+
+# Temporary local WP plugin work
+wordpress-plugin/

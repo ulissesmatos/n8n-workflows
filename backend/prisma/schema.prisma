@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Admin user for authentication
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // hashed with bcrypt
+  apiKey    String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workflows Workflow[]
+
+  @@index([email])
+  @@index([apiKey])
+}
+
+// Workflow model
+model Workflow {
+  id           String   @id @default(cuid())
+  title        String   @db.VarChar(255)
+  slug         String   @unique @db.VarChar(255) // For SEO-friendly URLs
+  description  String   @db.Text
+  content      String   @db.Text // HTML/markdown description with rich formatting
+  jsonData     Json     // The actual n8n workflow JSON
+  thumbnailUrl String?
+  
+  // Taxonomy
+  category     String   @db.VarChar(100) // e.g., "Integration", "Automation", "Data"
+  difficulty   String   @db.VarChar(50)  // easy, medium, hard
+  tags         String[] // Array of tags for filtering
+  
+  // Metadata
+  author       String   @db.VarChar(255)
+  version      String   @default("1.0.0")
+  downloadCount Int    @default(0)
+  viewCount    Int      @default(0)
+  rating       Float?   // Average rating out of 5
+  
+  // Status & Publishing
+  isPublished  Boolean  @default(false)
+  isFeatured   Boolean  @default(false)
+  
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  publishedAt  DateTime?
+  
+  admin        AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  adminId      String
+  
+  reviews      WorkflowReview[]
+  analytics    WorkflowAnalytics?
+
+  // Full-text search index - PostgreSQL tsvector for performance
+  searchVector Unsupported("tsvector")?
+
+  @@index([adminId])
+  @@index([category])
+  @@index([difficulty])
+  @@index([isPublished])
+  @@index([isFeatured])
+  @@index([slug])
+}
+
+// Workflow analytics for tracking embed views and downloads
+model WorkflowAnalytics {
+  id            String   @id @default(cuid())
+  workflowId    String   @unique
+  embedViews    Int      @default(0)
+  publicViews   Int      @default(0)
+  downloads     Int      @default(0)
+  lastAccessAt  DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  workflow      Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@index([workflowId])
+}
+
+// Tags model for better tag organization
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique @db.VarChar(100)
+  slug      String   @unique @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([slug])
+}
+
+// Category model
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique @db.VarChar(100)
+  slug      String   @unique @db.VarChar(100)
+  description String? @db.Text
+  icon      String?  // emoji or icon class
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+}
+
+// User reviews/ratings (for future enhancement)
+model WorkflowReview {
+  id          String   @id @default(cuid())
+  workflowId  String
+  rating      Int      // 1-5
+  comment     String?  @db.Text
+  userEmail   String   @db.VarChar(255) // Anonymous user email
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workflow    Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@index([workflowId])
+  @@index([userEmail])
+}
+
+// Audit log for security & compliance
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String   @db.VarChar(255) // e.g., "WORKFLOW_CREATED", "WORKFLOW_DELETED"
+  resource  String   @db.VarChar(255) // e.g., "Workflow", "AdminUser"
+  resourceId String  @db.VarChar(255)
+  userId    String?  // If performed by an admin user
+  details   Json?    // Additional context
+  ipAddress String?  @db.VarChar(45) // IPv6 compatible
+  userAgent String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([action])
+  @@index([resourceId])
+  @@index([userId])
+  @@index([createdAt])
+}
