@@ -117,16 +117,16 @@ VITE_APP_URL=https://your-domain.com
 
 ```bash
 # Build images
-docker-compose -f docker/docker-compose.yml build
+docker-compose -f docker-compose.yml build
 
 # Start services
-docker-compose -f docker/docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # View logs
-docker-compose -f docker/docker-compose.yml logs -f
+docker-compose -f docker-compose.yml logs -f
 
 # Stop services
-docker-compose -f docker/docker-compose.yml down
+docker-compose -f docker-compose.yml down
 ```
 
 ### Step 5: Verify Deployment
@@ -218,7 +218,7 @@ docker exec minisaas-backend npm run db:seed
 Use the included Traefik configuration in `docker-compose.yml` with production profile:
 
 ```bash
-docker-compose -f docker/docker-compose.yml --profile production up -d
+docker-compose -f docker-compose.yml --profile production up -d
 ```
 
 ### Using Nginx
@@ -310,7 +310,7 @@ sudo certbot renew --dry-run
 
 ```bash
 # Traefik automatically handles Let's Encrypt renewal
-docker-compose -f docker/docker-compose.yml --profile production restart reverse-proxy
+docker-compose -f docker-compose.yml --profile production restart reverse-proxy
 ```
 
 ## 📊 Monitoring & Logging
@@ -402,13 +402,13 @@ sudo tar -xzf /backups/minisaas-backup-20240116.tar.gz -C /opt/
 git pull origin main
 
 # Rebuild images
-docker-compose -f docker/docker-compose.yml build
+docker-compose -f docker-compose.yml build
 
 # Stop processes gracefully
-docker-compose -f docker/docker-compose.yml down --timeout 30
+docker-compose -f docker-compose.yml down --timeout 30
 
 # Start new version
-docker-compose -f docker/docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # Verify health
 curl http://localhost:3000/health

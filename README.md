@@ -226,11 +226,11 @@ minisaas-wordpress/
 
 ```bash
 # Local development with docker-compose
-docker-compose -f docker/docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # Production build
-docker build -t minisaas:latest -f docker/Dockerfile .
-docker-compose -f docker/docker-compose.yml --profile production up -d
+docker build -t minisaas:latest -f Dockerfile .
+docker-compose -f docker-compose.yml --profile production up -d
 ```
 
 ## 📚 Documentation

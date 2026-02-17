@@ -295,7 +295,7 @@ add_filter('wp_headers', function($headers) {
 
 Ensure the header is NOT set to `DENY`:
 
-Backend configuration in `docker/nginx.conf`:
+Backend configuration in `nginx.conf`:
 ```nginx
 add_header X-Frame-Options "SAMEORIGIN" always;
 ```
