@@ -22,6 +22,10 @@ CMD ["node", "dist/index.js"]
 # Frontend builder
 FROM node:18-alpine AS frontend-builder
 WORKDIR /app
+ARG VITE_API_URL
+ARG VITE_APP_URL
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_APP_URL=$VITE_APP_URL
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend ./
