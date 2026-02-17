@@ -27,7 +27,7 @@
         v-if="isCanvasOnly && workflow.jsonData"
         :workflow="workflow"
         :height="canvasHeight"
-        :interactive="false"
+        :interactive="canvasInteractive"
         :click-to-interact="false"
       />
 
@@ -100,6 +100,10 @@ const canvasHeight = computed(() => {
   const value = Number(route.query.height || 680);
   if (!Number.isFinite(value)) return 680;
   return Math.max(320, Math.round(value));
+});
+const canvasInteractive = computed(() => {
+  const value = String(route.query.interactive || '').toLowerCase();
+  return value === '1' || value === 'true' || value === 'yes' || value === 'on';
 });
 
 async function loadWorkflow() {

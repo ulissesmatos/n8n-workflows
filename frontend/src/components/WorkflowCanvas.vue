@@ -105,6 +105,38 @@ async function syncDemoElement() {
   } else {
     el.setAttribute('disableinteractivity', 'true');
   }
+
+  // Safety net for n8n demo behavior: if an interaction overlay still appears,
+  // auto-open it to keep the canvas visible in embeds.
+  if (!props.clickToInteract) {
+    forceOpenWorkflow(el);
+  }
+}
+
+function forceOpenWorkflow(el: N8nDemoElement) {
+  let attempts = 0;
+  const maxAttempts = 25;
+
+  const timer = window.setInterval(() => {
+    attempts += 1;
+
+    const root = (el as unknown as { shadowRoot?: ShadowRoot | null }).shadowRoot;
+    if (root) {
+      const candidates = root.querySelectorAll('button, [role="button"]');
+      for (const candidate of Array.from(candidates)) {
+        const text = (candidate.textContent || '').trim().toLowerCase();
+        if (text.includes('show workflow')) {
+          (candidate as HTMLElement).click();
+          window.clearInterval(timer);
+          return;
+        }
+      }
+    }
+
+    if (attempts >= maxAttempts) {
+      window.clearInterval(timer);
+    }
+  }, 200);
 }
 
 watch([parsedWorkflow, () => props.interactive, () => props.clickToInteract], () => {

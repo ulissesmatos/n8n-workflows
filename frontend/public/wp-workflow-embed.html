@@ -74,6 +74,9 @@
         // Optional: iframe height in px
         var height = Number(params.get('height') || 680);
         if (!Number.isFinite(height) || height < 320) height = 680;
+        var extra = Number(params.get('extra') || 56);
+        if (!Number.isFinite(extra) || extra < 0) extra = 56;
+        var effectiveHeight = height + extra;
 
         // Optional style
         var radius = Number(params.get('radius') || 14);
@@ -96,7 +99,7 @@
         app = app.replace(/\/$/, '');
 
         var src = app + '/embed/' + encodeURIComponent(slug) +
-          '?mode=canvas&height=' + encodeURIComponent(String(height));
+          '?mode=canvas&interactive=0&height=' + encodeURIComponent(String(effectiveHeight));
 
         var iframe = document.createElement('iframe');
         iframe.className = 'embed-frame';
@@ -104,7 +107,7 @@
         iframe.loading = 'eager';
         iframe.scrolling = 'no';
         iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-        iframe.style.height = height + 'px';
+        iframe.style.height = effectiveHeight + 'px';
         iframe.style.borderColor = border;
         iframe.style.borderRadius = radius + 'px';
         iframe.setAttribute('allowfullscreen', 'true');
