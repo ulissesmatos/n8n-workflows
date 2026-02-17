@@ -181,6 +181,12 @@ function logout() {
   padding: 1.5rem 1rem 2rem;
 }
 
+.app.embed-mode .main-content {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
 .footer {
   background: #090909;
   border-top: 1px solid #1e1e1e;
