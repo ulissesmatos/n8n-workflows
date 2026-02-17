@@ -158,9 +158,10 @@ onMounted(() => {
 
 .loading.loading-canvas-only {
   padding: 0;
-  border: 1px solid #283140;
-  border-radius: 12px;
-  background: #090d13;
+  /* Match WorkflowCanvas container so the transition is seamless */
+  border: 1px solid #242424;
+  border-radius: 14px;
+  background: #0b0e12;
 }
 
 .error {
