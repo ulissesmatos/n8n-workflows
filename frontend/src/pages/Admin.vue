@@ -18,6 +18,12 @@
         >
           Workflows
         </router-link>
+        <router-link
+          to="/admin/categories"
+          class="nav-item"
+        >
+          Categories
+        </router-link>
         <button
           class="nav-item logout"
           @click="handleLogout"

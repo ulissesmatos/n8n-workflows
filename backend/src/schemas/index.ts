@@ -68,6 +68,16 @@ export const ReorderWorkflowInListSchema = z.object({
   newOrder: z.number().int().min(0),
 });
 
+// Category schemas
+export const CreateCategorySchema = z.object({
+  name: z.string().min(1).max(100),
+  slug: z.string().min(1).max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  description: z.string().max(2000).optional(),
+  icon: z.string().max(50).optional(),
+});
+
+export const UpdateCategorySchema = CreateCategorySchema.partial();
+
 export type CreateWorkflow = z.infer<typeof CreateWorkflowSchema>;
 export type UpdateWorkflow = z.infer<typeof UpdateWorkflowSchema>;
 export type WorkflowQuery = z.infer<typeof WorkflowQuerySchema>;
@@ -78,3 +88,5 @@ export type CreateWorkflowList = z.infer<typeof CreateWorkflowListSchema>;
 export type UpdateWorkflowList = z.infer<typeof UpdateWorkflowListSchema>;
 export type AddWorkflowToList = z.infer<typeof AddWorkflowToListSchema>;
 export type ReorderWorkflowInList = z.infer<typeof ReorderWorkflowInListSchema>;
+export type CreateCategory = z.infer<typeof CreateCategorySchema>;
+export type UpdateCategory = z.infer<typeof UpdateCategorySchema>;

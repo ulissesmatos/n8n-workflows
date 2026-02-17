@@ -16,6 +16,7 @@ import workflowRoutes from './routes/workflows.js';
 import adminRoutes from './routes/admin.js';
 import embedRoutes from './routes/embed.js';
 import healthRoutes from './routes/health.js';
+import categoryRoutes from './routes/categories.js';
 
 // Types
 declare module 'fastify' {
@@ -108,6 +109,7 @@ async function main() {
 
   // Public API routes
   await fastify.register(workflowRoutes, { prefix: '/api/v1/workflows' });
+  await fastify.register(categoryRoutes, { prefix: '/api/v1/categories' });
 
   // Embed route (special lightweight mode)
   await fastify.register(embedRoutes, { prefix: '/api/v1/embed' });

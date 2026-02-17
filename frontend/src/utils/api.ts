@@ -148,6 +148,32 @@ class ApiClient {
     const response = await this.client.get('/admin/stats');
     return response.data;
   }
+
+  // Category methods
+  async getCategories() {
+    const response = await this.client.get('/categories');
+    return response.data;
+  }
+
+  async getAdminCategories() {
+    const response = await this.client.get('/admin/categories');
+    return response.data;
+  }
+
+  async createCategory(category: { name: string; slug: string; description?: string; icon?: string }) {
+    const response = await this.client.post('/admin/categories', category);
+    return response.data;
+  }
+
+  async updateCategory(id: string, category: { name?: string; slug?: string; description?: string; icon?: string }) {
+    const response = await this.client.put(`/admin/categories/${id}`, category);
+    return response.data;
+  }
+
+  async deleteCategory(id: string) {
+    const response = await this.client.delete(`/admin/categories/${id}`);
+    return response.data;
+  }
 }
 
 export const apiClient = new ApiClient();

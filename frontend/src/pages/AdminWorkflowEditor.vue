@@ -59,17 +59,8 @@
           <option value="">
             Select category
           </option>
-          <option value="Integration">
-            Integration
-          </option>
-          <option value="Automation">
-            Automation
-          </option>
-          <option value="Data">
-            Data Processing
-          </option>
-          <option value="Webhook">
-            Webhook
+          <option v-for="cat in categories" :key="cat.id" :value="cat.name">
+            {{ cat.icon ? cat.icon + ' ' : '' }}{{ cat.name }}
           </option>
         </select>
       </div>
@@ -204,6 +195,7 @@ const tagsString = ref('');
 const jsonDataString = ref('{\n  "nodes": [],\n  "connections": []\n}');
 const loading = ref(false);
 const error = ref('');
+const categories = ref<Array<{ id: string; name: string; slug: string; icon?: string }>>([]);
 const editorToolbar = [
   [{ header: [1, 2, 3, false] }],
   ['bold', 'italic', 'underline', 'blockquote'],
@@ -271,6 +263,14 @@ async function handleJsonFileUpload(event: Event) {
 }
 
 onMounted(async () => {
+  // Load categories from API
+  try {
+    const catResp = await apiClient.getAdminCategories();
+    categories.value = catResp.data;
+  } catch (err) {
+    console.error('Failed to load categories:', err);
+  }
+
   if (!props.isNew && workflowId.value) {
     try {
       const response = await apiClient.getAdminWorkflow(workflowId.value);

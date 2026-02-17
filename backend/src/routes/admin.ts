@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import bcrypt from 'bcryptjs';
 import { WorkflowService } from '@services/workflow.service.js';
 import { WorkflowListService } from '@services/workflow-list.service.js';
+import { CategoryService } from '@services/category.service.js';
 import { 
   LoginSchema, 
   AdminUserCreateSchema, 
@@ -12,6 +13,8 @@ import {
   UpdateWorkflowListSchema,
   AddWorkflowToListSchema,
   ReorderWorkflowInListSchema,
+  CreateCategorySchema,
+  UpdateCategorySchema,
 } from '@schemas/index.js';
 import { authenticateAdmin, verifyToken } from '@middleware/auth.js';
 import { getUserIp, getUserAgent } from '@utils/helpers.js';
@@ -19,6 +22,7 @@ import { getUserIp, getUserAgent } from '@utils/helpers.js';
 const adminRoutes = async (fastify: FastifyInstance) => {
   const workflowService = new WorkflowService(fastify.prisma);
   const listService = new WorkflowListService(fastify.prisma);
+  const categoryService = new CategoryService(fastify.prisma);
 
   // Admin login
   fastify.post('/login', async (request, reply) => {
@@ -514,6 +518,160 @@ const adminRoutes = async (fastify: FastifyInstance) => {
       return reply.status(400).send({
         statusCode: 400,
         message: error.message || 'Failed to reorder workflow',
+      });
+    }
+  });
+
+  // ========== Category Routes ==========
+
+  // Get all categories (admin view)
+  fastify.get('/categories', async (_request, reply) => {
+    try {
+      const categories = await categoryService.listAll();
+      const counts = await categoryService.countWorkflowsByCategory();
+
+      const data = categories.map((cat) => ({
+        ...cat,
+        workflowCount: counts[cat.name] ?? 0,
+      }));
+
+      return reply.send({
+        statusCode: 200,
+        data,
+      });
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.status(500).send({
+        statusCode: 500,
+        message: 'Failed to fetch categories',
+      });
+    }
+  });
+
+  // Get single category by ID
+  fastify.get('/categories/:id', async (request, reply) => {
+    try {
+      const { id } = request.params as { id: string };
+      const category = await categoryService.getById(id);
+
+      if (!category) {
+        return reply.status(404).send({
+          statusCode: 404,
+          message: 'Category not found',
+        });
+      }
+
+      return reply.send({
+        statusCode: 200,
+        data: category,
+      });
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.status(500).send({
+        statusCode: 500,
+        message: 'Failed to fetch category',
+      });
+    }
+  });
+
+  // Create new category
+  fastify.post('/categories', async (request, reply) => {
+    try {
+      const data = CreateCategorySchema.parse(request.body);
+      const adminId = (request.user as any).sub;
+
+      const category = await categoryService.create(data);
+
+      // Audit log
+      await fastify.prisma.auditLog.create({
+        data: {
+          action: 'CATEGORY_CREATED',
+          resource: 'Category',
+          resourceId: category.id,
+          userId: adminId,
+          ipAddress: getUserIp(request),
+          userAgent: getUserAgent(request),
+          details: { name: category.name, slug: category.slug },
+        },
+      });
+
+      return reply.status(201).send({
+        statusCode: 201,
+        data: category,
+      });
+    } catch (error: any) {
+      fastify.log.error(error);
+      return reply.status(400).send({
+        statusCode: 400,
+        message: error.message || 'Failed to create category',
+      });
+    }
+  });
+
+  // Update category
+  fastify.put('/categories/:id', async (request, reply) => {
+    try {
+      const { id } = request.params as { id: string };
+      const data = UpdateCategorySchema.parse(request.body);
+      const adminId = (request.user as any).sub;
+
+      const category = await categoryService.update(id, data);
+
+      // Audit log
+      await fastify.prisma.auditLog.create({
+        data: {
+          action: 'CATEGORY_UPDATED',
+          resource: 'Category',
+          resourceId: category.id,
+          userId: adminId,
+          ipAddress: getUserIp(request),
+          userAgent: getUserAgent(request),
+          details: data,
+        },
+      });
+
+      return reply.send({
+        statusCode: 200,
+        data: category,
+      });
+    } catch (error: any) {
+      fastify.log.error(error);
+      return reply.status(400).send({
+        statusCode: 400,
+        message: error.message || 'Failed to update category',
+      });
+    }
+  });
+
+  // Delete category
+  fastify.delete('/categories/:id', async (request, reply) => {
+    try {
+      const { id } = request.params as { id: string };
+      const adminId = (request.user as any).sub;
+
+      await categoryService.delete(id);
+
+      // Audit log
+      await fastify.prisma.auditLog.create({
+        data: {
+          action: 'CATEGORY_DELETED',
+          resource: 'Category',
+          resourceId: id,
+          userId: adminId,
+          ipAddress: getUserIp(request),
+          userAgent: getUserAgent(request),
+        },
+      });
+
+      return reply.send({
+        statusCode: 200,
+        message: 'Category deleted successfully',
+      });
+    } catch (error: any) {
+      fastify.log.error(error);
+      return reply.status(400).send({
+        statusCode: 400,
+        message: error.message || 'Failed to delete category',
       });
     }
   });

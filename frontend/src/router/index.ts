@@ -10,6 +10,7 @@ const Admin = () => import('@pages/Admin.vue');
 const AdminDashboard = () => import('@pages/AdminDashboard.vue');
 const AdminWorkflows = () => import('@pages/AdminWorkflows.vue');
 const AdminWorkflowEditor = () => import('@pages/AdminWorkflowEditor.vue');
+const AdminCategories = () => import('@pages/AdminCategories.vue');
 const Login = () => import('@pages/Login.vue');
 const Embed = () => import('@pages/Embed.vue');
 const NotFound = () => import('@pages/NotFound.vue');
@@ -63,6 +64,12 @@ const routes: RouteRecordRaw[] = [
         name: 'AdminWorkflows',
         component: AdminWorkflows,
         meta: { title: 'Manage Workflows' },
+      },
+      {
+        path: 'categories',
+        name: 'AdminCategories',
+        component: AdminCategories,
+        meta: { title: 'Manage Categories' },
       },
       {
         path: 'workflows/new',
