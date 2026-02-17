@@ -65,7 +65,6 @@ export const AddWorkflowToListSchema = z.object({
 });
 
 export const ReorderWorkflowInListSchema = z.object({
-  workflowId: z.string(),
   newOrder: z.number().int().min(0),
 });
 
