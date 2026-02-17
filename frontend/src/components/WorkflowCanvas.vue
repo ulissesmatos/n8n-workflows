@@ -1,6 +1,14 @@
 <template>
-  <div v-if="hasWorkflow" class="workflow-canvas">
-    <n8n-demo ref="demoRef" class="n8n-demo-host" />
+  <div
+    v-if="hasWorkflow"
+    class="workflow-canvas"
+    :style="{ height: `${canvasHeight}px` }"
+  >
+    <n8n-demo
+      ref="demoRef"
+      class="n8n-demo-host"
+      :style="{ height: `${canvasHeight}px`, '--n8n-workflow-min-height': `${canvasHeight}px` }"
+    />
   </div>
 
   <div v-else class="canvas-empty">
@@ -16,6 +24,8 @@ import type { Workflow } from '@app-types/index';
 interface Props {
   workflow: Workflow | null;
   interactive?: boolean;
+  clickToInteract?: boolean;
+  height?: number;
 }
 
 interface N8nDemoElement extends HTMLElement {
@@ -24,6 +34,8 @@ interface N8nDemoElement extends HTMLElement {
 
 const props = withDefaults(defineProps<Props>(), {
   interactive: false,
+  clickToInteract: false,
+  height: 560,
 });
 
 const demoRef = ref<N8nDemoElement | null>(null);
@@ -65,6 +77,12 @@ const hasWorkflow = computed(() => {
   return Array.isArray(wf.nodes) && wf.nodes.length > 0;
 });
 
+const canvasHeight = computed(() => {
+  const value = Number(props.height);
+  if (!Number.isFinite(value)) return 560;
+  return Math.max(320, Math.round(value));
+});
+
 async function syncDemoElement() {
   await nextTick();
   const el = demoRef.value;
@@ -76,36 +94,31 @@ async function syncDemoElement() {
   el.setAttribute('workflow', serializedWorkflow);
   el.setAttribute('theme', 'dark');
   el.setAttribute('tidyup', 'true');
+  el.setAttribute('clicktointeract', props.clickToInteract ? 'true' : 'false');
 
   if (props.interactive) {
-    el.setAttribute('clicktointeract', 'true');
     el.removeAttribute('disableinteractivity');
   } else {
     el.setAttribute('disableinteractivity', 'true');
-    el.removeAttribute('clicktointeract');
   }
 }
 
-watch([parsedWorkflow, () => props.interactive], () => {
+watch([parsedWorkflow, () => props.interactive, () => props.clickToInteract], () => {
   syncDemoElement();
 }, { immediate: true });
 </script>
 
 <style scoped>
 .workflow-canvas {
-  --canvas-height: 560px;
   border: 1px solid #242424;
   border-radius: 14px;
   overflow: hidden;
-  height: var(--canvas-height);
   background: #0b0e12;
 }
 
 .n8n-demo-host {
   display: block;
   width: 100%;
-  height: var(--canvas-height);
-  --n8n-workflow-min-height: var(--canvas-height);
 }
 
 .canvas-empty {

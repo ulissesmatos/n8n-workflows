@@ -1,5 +1,8 @@
 <template>
-  <div class="embed">
+  <div
+    class="embed"
+    :class="{ 'embed-canvas-only': isCanvasOnly }"
+  >
     <div
       v-if="loading"
       class="loading"
@@ -18,6 +21,15 @@
       v-else-if="workflow"
       class="workflow-embed"
     >
+      <WorkflowCanvas
+        v-if="isCanvasOnly && workflow.jsonData"
+        :workflow="workflow"
+        :height="canvasHeight"
+        :interactive="true"
+        :click-to-interact="false"
+      />
+
+      <template v-else>
       <div class="embed-header">
         <h2>{{ workflow.title }}</h2>
         <span class="badge">{{ workflow.category }}</span>
@@ -30,6 +42,9 @@
       <WorkflowCanvas
         v-if="workflow.jsonData"
         :workflow="workflow"
+        :height="canvasHeight"
+        :interactive="true"
+        :click-to-interact="false"
       />
 
       <div class="embed-actions">
@@ -56,6 +71,7 @@
           >n8n Workflow Library</a>
         </p>
       </div>
+      </template>
     </div>
   </div>
 </template>
@@ -74,6 +90,15 @@ const error = ref('');
 
 const slug = computed(() => route.params.slug as string);
 const viewUrl = computed(() => `${window.location.origin}/workflows/${slug.value}`);
+const isCanvasOnly = computed(() => {
+  const mode = String(route.query.mode || '').toLowerCase();
+  return mode === 'canvas' || mode === 'canvas-only' || mode === 'only-canvas' || route.query.canvasOnly === '1';
+});
+const canvasHeight = computed(() => {
+  const value = Number(route.query.height || 680);
+  if (!Number.isFinite(value)) return 680;
+  return Math.max(320, Math.round(value));
+});
 
 async function loadWorkflow() {
   try {
@@ -107,6 +132,13 @@ onMounted(() => {
   border: 1px solid #242424;
   border-radius: 14px;
   background: #0a0a0a;
+}
+
+.embed.embed-canvas-only {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .loading,
@@ -172,5 +204,4 @@ onMounted(() => {
   text-decoration: underline;
 }
 </style>
-
 
