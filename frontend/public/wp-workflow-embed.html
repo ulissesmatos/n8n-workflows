@@ -98,8 +98,14 @@
         // Normalize app url
         app = app.replace(/\/$/, '');
 
+        var interactive = String(params.get('interactive') || '1').toLowerCase();
+        var interactiveFlag = (interactive === '0' || interactive === 'false' || interactive === 'no' || interactive === 'off')
+          ? '0'
+          : '1';
+
         var src = app + '/embed/' + encodeURIComponent(slug) +
-          '?mode=canvas&interactive=0&height=' + encodeURIComponent(String(effectiveHeight));
+          '?mode=canvas&interactive=' + encodeURIComponent(interactiveFlag) +
+          '&height=' + encodeURIComponent(String(effectiveHeight));
 
         var iframe = document.createElement('iframe');
         iframe.className = 'embed-frame';

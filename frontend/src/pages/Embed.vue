@@ -102,7 +102,9 @@ const canvasHeight = computed(() => {
   return Math.max(320, Math.round(value));
 });
 const canvasInteractive = computed(() => {
-  const value = String(route.query.interactive || '').toLowerCase();
+  const raw = route.query.interactive;
+  if (raw === undefined || raw === null || raw === '') return true;
+  const value = String(raw).toLowerCase();
   return value === '1' || value === 'true' || value === 'yes' || value === 'on';
 });
 
