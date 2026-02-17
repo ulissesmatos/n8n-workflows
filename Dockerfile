@@ -2,20 +2,21 @@
 FROM node:18-alpine AS backend-builder
 WORKDIR /app
 COPY backend/package*.json ./
-RUN npm ci
+COPY backend/prisma ./prisma
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 COPY backend/src ./src
 COPY backend/tsconfig.json ./
-COPY backend/prisma ./prisma
-RUN npm run build
+RUN npx prisma generate && npm run build
 
 # Production backend
 FROM node:18-alpine AS backend
 WORKDIR /app
 ENV NODE_ENV=production
 COPY backend/package*.json ./
-RUN npm ci --only=production
+COPY backend/prisma ./prisma
+RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
+RUN npx prisma generate
 COPY --from=backend-builder /app/dist ./dist
-COPY --from=backend-builder /app/prisma ./prisma
 EXPOSE 3000
 CMD ["node", "dist/index.js"]
 
@@ -27,7 +28,7 @@ ARG VITE_APP_URL
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_APP_URL=$VITE_APP_URL
 COPY frontend/package*.json ./
-RUN npm ci
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 COPY frontend ./
 RUN npm run build
 
