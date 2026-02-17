@@ -62,6 +62,7 @@ model Workflow {
   
   reviews      WorkflowReview[]
   analytics    WorkflowAnalytics?
+  listItems    WorkflowListItem[]
 
   // Full-text search index - PostgreSQL tsvector for performance
   searchVector Unsupported("tsvector")?
@@ -148,4 +149,42 @@ model AuditLog {
   @@index([resourceId])
   @@index([userId])
   @@index([createdAt])
+}
+
+// Curated workflow lists (e.g., "Best Automation for Marketing", "Top 10 CRM Workflows")
+model WorkflowList {
+  id          String   @id @default(cuid())
+  title       String   @db.VarChar(255)
+  slug        String   @unique @db.VarChar(255)
+  description String?  @db.Text
+  icon        String?  @db.VarChar(50) // emoji or class name
+  order       Int      @default(0) // display order
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false) // show prominently on frontend
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items       WorkflowListItem[]
+
+  @@index([slug])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@index([order])
+}
+
+// Many-to-many relation between workflows and lists
+model WorkflowListItem {
+  id         String   @id @default(cuid())
+  listId     String
+  workflowId String
+  order      Int      @default(0) // order within the list
+  createdAt  DateTime @default(now())
+
+  list       WorkflowList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  workflow   Workflow     @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([listId, workflowId])
+  @@index([listId])
+  @@index([workflowId])
+  @@index([order])
 }

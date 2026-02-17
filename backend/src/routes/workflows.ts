@@ -1,9 +1,11 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { WorkflowService } from '@services/workflow.service.js';
+import { WorkflowListService } from '@services/workflow-list.service.js';
 import { WorkflowQuerySchema } from '@schemas/index.js';
 
 const workflowRoutes = async (fastify: FastifyInstance) => {
   const workflowService = new WorkflowService(fastify.prisma);
+  const listService = new WorkflowListService(fastify.prisma);
 
   // Get featured workflows
   fastify.get('/featured', async (request, reply) => {
@@ -128,6 +130,56 @@ const workflowRoutes = async (fastify: FastifyInstance) => {
       return reply.status(500).send({
         statusCode: 500,
         message: 'Failed to create review',
+      });
+    }
+  });
+
+  // ========== Public Curated Lists Routes ==========
+
+  // Get all active/featured lists (public)
+  fastify.get('/lists', async (request, reply) => {
+    try {
+      const { featured } = request.query as { featured?: string };
+      const lists = await listService.getAllLists({
+        activeOnly: true,
+        featuredOnly: featured === '1' || featured === 'true',
+      });
+      
+      return reply.send({
+        statusCode: 200,
+        data: lists,
+      });
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.status(500).send({
+        statusCode: 500,
+        message: 'Failed to fetch lists',
+      });
+    }
+  });
+
+  // Get list by slug with workflows (public)
+  fastify.get('/lists/:slug', async (request, reply) => {
+    try {
+      const { slug } = request.params as { slug: string };
+      const list = await listService.getListBySlug(slug);
+
+      if (!list || !list.isActive) {
+        return reply.status(404).send({
+          statusCode: 404,
+          message: 'List not found',
+        });
+      }
+
+      return reply.send({
+        statusCode: 200,
+        data: list,
+      });
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.status(500).send({
+        statusCode: 500,
+        message: 'Failed to fetch list',
       });
     }
   });

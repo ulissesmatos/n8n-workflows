@@ -200,6 +200,15 @@
                   </span>
                 </div>
 
+                <NodeBadges
+                  v-if="workflow.jsonData"
+                  :json-data="workflow.jsonData"
+                  :max="5"
+                  :size="18"
+                  compact
+                  class="card-node-badges"
+                />
+
                 <div class="card-footer">
                   <span class="views">{{ workflow.viewCount }} views</span>
                   <span
@@ -253,6 +262,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useWorkflowStore } from '@stores/workflows';
+import NodeBadges from '@/components/NodeBadges.vue';
 import type { WorkflowFilters } from '@app-types/index';
 
 const workflowStore = useWorkflowStore();
@@ -552,6 +562,12 @@ onMounted(() => {
   gap: 0.5rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
+}
+
+.card-node-badges {
+  margin-bottom: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #1f1f1f;
 }
 
 .tag,

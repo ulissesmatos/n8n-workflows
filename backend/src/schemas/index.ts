@@ -47,9 +47,35 @@ export const WorkflowReviewSchema = z.object({
   userEmail: z.string().email(),
 });
 
+// Workflow List schemas
+export const CreateWorkflowListSchema = z.object({
+  title: z.string().min(3).max(255),
+  slug: z.string().min(3).max(255).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  description: z.string().max(2000).optional(),
+  icon: z.string().max(50).optional(),
+  order: z.number().int().min(0).default(0),
+  isFeatured: z.boolean().default(false),
+});
+
+export const UpdateWorkflowListSchema = CreateWorkflowListSchema.partial();
+
+export const AddWorkflowToListSchema = z.object({
+  workflowId: z.string(),
+  order: z.number().int().min(0).optional(),
+});
+
+export const ReorderWorkflowInListSchema = z.object({
+  workflowId: z.string(),
+  newOrder: z.number().int().min(0),
+});
+
 export type CreateWorkflow = z.infer<typeof CreateWorkflowSchema>;
 export type UpdateWorkflow = z.infer<typeof UpdateWorkflowSchema>;
 export type WorkflowQuery = z.infer<typeof WorkflowQuerySchema>;
 export type Login = z.infer<typeof LoginSchema>;
 export type AdminUserCreate = z.infer<typeof AdminUserCreateSchema>;
 export type WorkflowReview = z.infer<typeof WorkflowReviewSchema>;
+export type CreateWorkflowList = z.infer<typeof CreateWorkflowListSchema>;
+export type UpdateWorkflowList = z.infer<typeof UpdateWorkflowListSchema>;
+export type AddWorkflowToList = z.infer<typeof AddWorkflowToListSchema>;
+export type ReorderWorkflowInList = z.infer<typeof ReorderWorkflowInListSchema>;

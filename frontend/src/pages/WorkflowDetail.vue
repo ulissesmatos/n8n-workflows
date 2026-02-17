@@ -62,6 +62,21 @@
           </span>
         </div>
 
+        <!-- Node Icons -->
+        <div
+          v-if="workflow.jsonData"
+          class="workflow-nodes-section"
+        >
+          <h3 class="nodes-title">
+            Nodes Used
+          </h3>
+          <NodeBadges
+            :json-data="workflow.jsonData"
+            :max="12"
+            :size="24"
+          />
+        </div>
+
         <div class="workflow-actions">
           <button
             class="btn btn-primary"
@@ -126,6 +141,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useWorkflowStore } from '@stores/workflows';
 import WorkflowCanvas from '@components/WorkflowCanvas.vue';
+import NodeBadges from '@/components/NodeBadges.vue';
 
 const route = useRoute();
 const workflowStore = useWorkflowStore();
@@ -227,6 +243,19 @@ onMounted(async () => {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 2rem;
+}
+
+.workflow-nodes-section {
+  margin-bottom: 1.5rem;
+}
+
+.nodes-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  margin: 0 0 0.5rem;
 }
 
 .tag {

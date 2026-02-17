@@ -142,6 +142,7 @@ export class WorkflowService {
           viewCount: true,
           rating: true,
           thumbnailUrl: true,
+          jsonData: true,
           createdAt: true,
         },
         orderBy,
