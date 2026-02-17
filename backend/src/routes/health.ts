@@ -1,7 +1,7 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 const healthRoutes = async (fastify: FastifyInstance) => {
-  fastify.get('/health', async (_request, reply) => {
+  const healthHandler = async (_request: FastifyRequest, reply: FastifyReply) => {
     try {
       // Check database connection
       await fastify.prisma.$queryRaw`SELECT 1`;
@@ -20,7 +20,10 @@ const healthRoutes = async (fastify: FastifyInstance) => {
         timestamp: new Date().toISOString(),
       });
     }
-  });
+  };
+
+  fastify.get('/health', healthHandler);
+  fastify.get('/api/v1/health', healthHandler);
 };
 
 export default healthRoutes;

@@ -1,6 +1,7 @@
 # Multi-stage build for backend
-FROM node:18-alpine AS backend-builder
+FROM node:20-bookworm-slim AS backend-builder
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY backend/package*.json ./
 COPY backend/prisma ./prisma
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
@@ -9,9 +10,10 @@ COPY backend/tsconfig.json ./
 RUN npx prisma generate && npm run build
 
 # Production backend
-FROM node:18-alpine AS backend
+FROM node:20-bookworm-slim AS backend
 WORKDIR /app
 ENV NODE_ENV=production
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY backend/package*.json ./
 COPY backend/prisma ./prisma
 RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
