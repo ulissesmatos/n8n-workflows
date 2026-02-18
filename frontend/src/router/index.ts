@@ -3,9 +3,6 @@ import { useAuthStore } from '@stores/auth';
 import type { RouteLocationNormalized } from 'vue-router';
 
 // Lazy load pages for code splitting
-const Home = () => import('@pages/Home.vue');
-const WorkflowList = () => import('@pages/WorkflowList.vue');
-const WorkflowDetail = () => import('@pages/WorkflowDetail.vue');
 const Admin = () => import('@pages/Admin.vue');
 const AdminDashboard = () => import('@pages/AdminDashboard.vue');
 const AdminWorkflows = () => import('@pages/AdminWorkflows.vue');
@@ -15,25 +12,32 @@ const Login = () => import('@pages/Login.vue');
 const Embed = () => import('@pages/Embed.vue');
 const NotFound = () => import('@pages/NotFound.vue');
 
+const SKIPTODONE_BASE = 'https://skiptodone.com';
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
-    meta: { title: 'n8n Workflow Library' },
+    redirect: '/login',
   },
+  // Redirect public workflow pages to skiptodone.com (client-side fallback)
   {
     path: '/workflows',
     name: 'WorkflowList',
-    component: WorkflowList,
-    meta: { title: 'Workflows' },
+    beforeEnter: () => {
+      window.location.href = `${SKIPTODONE_BASE}/workflows`;
+      return false;
+    },
+    component: NotFound,
   },
   {
     path: '/workflows/:slug',
     name: 'WorkflowDetail',
-    component: WorkflowDetail,
-    props: true,
-    meta: { title: 'Workflow Details' },
+    beforeEnter: (to) => {
+      window.location.href = `${SKIPTODONE_BASE}/workflows/${to.params.slug}`;
+      return false;
+    },
+    component: NotFound,
   },
   {
     path: '/embed/:slug',
@@ -120,7 +124,7 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
 
   // Redirect authenticated users away from login
   if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    return { name: 'Home' };
+    return { name: 'AdminDashboard' };
   }
 
   // Update title

@@ -19,12 +19,13 @@
         
         <ul class="nav-menu">
           <li class="nav-item">
-            <router-link
-              to="/workflows"
+            <a
+              href="https://skiptodone.com/workflows"
               class="nav-link"
+              target="_blank"
             >
-              Explore
-            </router-link>
+              Workflows ↗
+            </a>
           </li>
           <li
             v-if="!authStore.isAuthenticated"
